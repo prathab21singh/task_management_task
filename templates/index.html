@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Task Management App</h1>
+
+        <div class="add-task">
+            <h2>Add New Task</h2>
+            <form action="{{ url_for('add_task') }}" method="post">
+                <input type="text" name="description" placeholder="Task description" required>
+                <input type="date" name="deadline">
+                <select name="status">
+                    <option value="pending">Pending</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+
+        <div class="task-list">
+            <h2>All Tasks</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Deadline</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in tasks %}
+                    <tr>
+                        <td>{{ task[0] }}</td>
+                        <td>{{ task[1] }}</td>
+                        <td>{{ task[2] }}</td>
+                        <td>
+                            <form action="{{ url_for('update_task', task_id=task[0]) }}" method="post" class="status-form">
+                                <select name="status" onchange="this.form.submit()">
+                                    <option value="pending" {% if task[3] == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="completed" {% if task[3] == 'completed' %}selected{% endif %}>Completed</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('delete_task', task_id=task[0]) }}">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
